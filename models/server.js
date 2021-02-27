@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { dbConnection } = require("../database/config");
 
 class Server {
     constructor() {
@@ -7,11 +8,19 @@ class Server {
         this.PORT = process.env.PORT;
         this.usuariosPath = "/api/usuarios";
 
+
+        //conección a la base de datos
+        this.databaseCNN();
+
         //Middlewares. añanden funcionalidad a mi web server y siempre va a ejecutarse al levantar el servidor
         this.middelewares();
 
         //rutas de la app
         this.routes();
+    }
+
+    async databaseCNN() {
+        await dbConnection();
     }
 
     middelewares() {
