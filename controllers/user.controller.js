@@ -1,4 +1,6 @@
 const { response, request } = require('express');
+const bcryptjs = require('bcryptjs');
+
 const User = require('../models/user');
 
 
@@ -17,11 +19,18 @@ const usersGet = (req = request, res = response) => {
 }
 
 const usersPost = async(req, res = response) => {
-    const body = req.body;
-    const user = new User(body); //nueva instancia del usuario
+    const { nombre, email, password, rol } = req.body; //aquí estamos haciendo la desestructuración
+    const user = new User({ nombre, email, password, rol }); //nueva instancia del usuario
+
+    //Ver si el correo existe 
+
+    //Hacer el hash de la constraseña aquí se hace hace la encriptación de la contraseña
+    const salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync(password, salt);
+    //guardar en BD
+
     await user.save();
     res.json({
-        msj: 'post API from controller to ',
         user
     });
 }
